@@ -12,5 +12,6 @@ import java.util.Optional;
 public interface BookRepository extends JpaRepository<BookEntity, Long> {
     List<BookEntity> findByLanguage(String language);
     Optional<BookEntity> findByTitle(String title);
+    long countByLanguage(String language);
 }
 

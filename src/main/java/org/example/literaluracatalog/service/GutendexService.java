@@ -68,6 +68,14 @@ public class GutendexService {
         return booksFromApi;
     }
 
+    public long getBookCountByLanguage(String language) {
+        return bookRepository.countByLanguage(language);
+    }
+
+    public List<AuthorEntity> getAuthorsAliveInYear(int year) {
+        return authorRepository.findByBirthYearLessThanEqualAndDeathYearGreaterThanEqual(year, year);
+    }
+
     /**
      * Clase interna para mapear la respuesta de Gutendex.
      */

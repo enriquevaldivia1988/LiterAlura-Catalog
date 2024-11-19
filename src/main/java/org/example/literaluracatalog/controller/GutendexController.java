@@ -46,6 +46,11 @@ public class GutendexController {
 
     @GetMapping("/authors/alive")
     public List<AuthorEntity> getAuthorsAliveInYear(@RequestParam int year) {
-        return authorRepository.findByBirthYearLessThanEqualAndDeathYearGreaterThanEqual(year, year);
+        return gutendexService.getAuthorsAliveInYear(year);
+    }
+
+    @GetMapping("/books/count")
+    public long getBookCountByLanguage(@RequestParam String language) {
+        return gutendexService.getBookCountByLanguage(language);
     }
 }

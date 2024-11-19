@@ -79,12 +79,18 @@ public class LiterAluraCatalogApplication implements CommandLineRunner {
                     System.out.print("Enter year to find authors alive in that year: ");
                     int year = scanner.nextInt();
                     scanner.nextLine(); // Consume newline
-                    List<AuthorEntity> authorsAlive = authorRepository.findByBirthYearLessThanEqualAndDeathYearGreaterThanEqual(year, year);
+                    List<AuthorEntity> authorsAlive = gutendexService.getAuthorsAliveInYear(year);
                     if (authorsAlive.isEmpty()) {
                         System.out.println("No authors found alive in the specified year.");
                     } else {
                         authorsAlive.forEach(author -> System.out.println(author.getName() + " (Born: " + author.getBirthYear() + ", Died: " + author.getDeathYear() + ")"));
                     }
+                    break;
+                case 6:
+                    System.out.print("Enter language to count books: ");
+                    String countLanguage = scanner.nextLine();
+                    long bookCount = gutendexService.getBookCountByLanguage(countLanguage);
+                    System.out.println("Number of books in " + countLanguage + ": " + bookCount);
                     break;
                 case 0:
                     System.out.println("Exiting...");
@@ -102,6 +108,7 @@ public class LiterAluraCatalogApplication implements CommandLineRunner {
         System.out.println("3. List books by language");
         System.out.println("4. List all authors");
         System.out.println("5. List authors alive in a specific year");
+        System.out.println("6. Count books by language");
         System.out.println("0. Exit");
         System.out.print("Select an option: ");
     }
