@@ -18,6 +18,8 @@ public class BookEntity {
     @Column(length = 500) // Ajustar la longitud máxima
     private String author;
 
+    private String language;
+
     @Column(name = "download_count")
     private int downloadCount;
 }

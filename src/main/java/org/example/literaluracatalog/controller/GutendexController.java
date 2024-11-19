@@ -30,4 +30,8 @@ public class GutendexController {
         return bookRepository.findAll();
     }
 
+    @GetMapping("/books/language")
+    public List<BookEntity> getBooksByLanguage(@RequestParam String language) {
+        return bookRepository.findByLanguage(language);
+    }
 }

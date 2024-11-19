@@ -42,6 +42,7 @@ public class GutendexService {
             BookEntity entity = new BookEntity();
             entity.setTitle(book.getTitle());
             entity.setAuthor(book.getAuthor() != null ? book.getAuthor() : "Desconocido");
+            entity.setLanguage(book.getLanguage() != null ? book.getLanguage() : "Desconocido");
             entity.setDownloadCount(book.getDownloadCount());
             return entity;
         }).collect(Collectors.toList());
