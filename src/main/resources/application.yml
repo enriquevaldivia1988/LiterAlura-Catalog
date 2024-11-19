@@ -1,0 +1,12 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:6330/literalura
+    username: enrique
+    password: Campeonxp2*;
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+
+  application:
+    name: LiterAlura-Catalog
