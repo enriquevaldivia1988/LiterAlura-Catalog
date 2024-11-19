@@ -1,7 +1,9 @@
 package org.example.literaluracatalog.service;
 
+import org.example.literaluracatalog.entity.AuthorEntity;
 import org.example.literaluracatalog.entity.BookEntity;
 import org.example.literaluracatalog.model.Book;
+import org.example.literaluracatalog.repository.AuthorRepository;
 import org.example.literaluracatalog.repository.BookRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -14,8 +16,10 @@ public class GutendexService {
 
     private final RestTemplate restTemplate;
     private final BookRepository bookRepository;
+    private final AuthorRepository authorRepository;
 
-    public GutendexService(BookRepository bookRepository) {
+    public GutendexService(BookRepository bookRepository, AuthorRepository authorRepository) {
+        this.authorRepository = authorRepository;
         this.restTemplate = new RestTemplate();
         this.bookRepository = bookRepository;
     }
@@ -27,27 +31,39 @@ public class GutendexService {
      * @return Una lista de libros desde la API.
      */
     public List<Book> getBooks(String query) {
-        // Consumir la API de Gutendex
         String url = "https://gutendex.com/books/?search=" + query;
         GutendexResponse response = restTemplate.getForObject(url, GutendexResponse.class);
 
         if (response == null || response.getResults() == null) {
-            return List.of(); // Retorna lista vacía si no hay resultados
+            return List.of();
         }
 
         List<Book> booksFromApi = response.getResults();
 
-        // Guardar los datos en la base de datos
-        List<BookEntity> entities = booksFromApi.stream().map(book -> {
-            BookEntity entity = new BookEntity();
-            entity.setTitle(book.getTitle());
-            entity.setAuthor(book.getAuthor() != null ? book.getAuthor() : "Desconocido");
-            entity.setLanguage(book.getLanguage() != null ? book.getLanguage() : "Desconocido");
-            entity.setDownloadCount(book.getDownloadCount());
-            return entity;
+        List<BookEntity> bookEntities = booksFromApi.stream().map(book -> {
+            BookEntity bookEntity = bookRepository.findByTitle(book.getTitle())
+                    .orElse(new BookEntity());
+            bookEntity.setTitle(book.getTitle());
+            bookEntity.setLanguage(book.getLanguage());
+            bookEntity.setDownloadCount(book.getDownloadCount());
+            bookEntity.setAuthorName(book.getAuthorName());
+            bookEntity.setAuthorBirthYear(book.getAuthorBirthYear());
+            bookEntity.setAuthorDeathYear(book.getAuthorDeathYear());
+            return bookEntity;
         }).collect(Collectors.toList());
 
-        bookRepository.saveAll(entities);
+        bookRepository.saveAll(bookEntities);
+
+        List<AuthorEntity> authorEntities = booksFromApi.stream().map(book -> {
+            AuthorEntity authorEntity = authorRepository.findByName(book.getAuthorName())
+                    .orElse(new AuthorEntity());
+            authorEntity.setName(book.getAuthorName());
+            authorEntity.setBirthYear(book.getAuthorBirthYear());
+            authorEntity.setDeathYear(book.getAuthorDeathYear());
+            return authorEntity;
+        }).collect(Collectors.toList());
+
+        authorRepository.saveAll(authorEntities);
 
         return booksFromApi;
     }

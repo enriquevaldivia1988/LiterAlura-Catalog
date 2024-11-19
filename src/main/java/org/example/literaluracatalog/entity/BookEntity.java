@@ -15,12 +15,13 @@ public class BookEntity {
     @Column(length = 1000) // Ajustar la longitud máxima
     private String title;
 
-    @Column(length = 500) // Ajustar la longitud máxima
-    private String author;
-
     private String language;
 
     @Column(name = "download_count")
     private int downloadCount;
+
+    private String authorName;
+    private int authorBirthYear;
+    private int authorDeathYear;
 }
 

@@ -9,18 +9,28 @@ import java.util.List;
 public class Book {
     private int id;
     private String title;
-    private String author;
     private String language;
+    private int downloadCount;
+    private String authorName;
+    private int authorBirthYear;
+    private int authorDeathYear;
 
     @JsonProperty("download_count")
-    private int downloadCount;
+    private void unpackDownloadCount(int downloadCount) {
+        this.downloadCount = downloadCount;
+    }
 
     @JsonProperty("authors")
     private void unpackAuthors(List<Author> authors) {
         if (authors != null && !authors.isEmpty()) {
-            this.author = authors.get(0).getName();
+            Author firstAuthor = authors.get(0);
+            this.authorName = firstAuthor.getName();
+            this.authorBirthYear = firstAuthor.getBirthYear();
+            this.authorDeathYear = firstAuthor.getDeathYear();
         } else {
-            this.author = "Unknown";
+            this.authorName = "Unknown";
+            this.authorBirthYear = 0;
+            this.authorDeathYear = 0;
         }
     }
 
@@ -36,5 +46,9 @@ public class Book {
     @Data
     private static class Author {
         private String name;
+        @JsonProperty("birth_year")
+        private int birthYear;
+        @JsonProperty("death_year")
+        private int deathYear;
     }
 }
